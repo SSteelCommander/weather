@@ -1,5 +1,6 @@
 h1 {
-	background-color: darkgrey;
+	background-color: darkblue;
+    text-emphasis-color: white;
 	text-align: center;
 }
 label {
@@ -8,7 +9,7 @@ label {
 	font-size: 20px;
 }
 .card {
-	margin: 10px;
+	margin: 5px;
 }
 .colOne {
 	background-color: lightblue;
