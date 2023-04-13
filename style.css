@@ -11,7 +11,7 @@ label {
 	margin: 10px;
 }
 .colOne {
-	background-color: white;
+	background-color: lightblue;
 
 }
 .colTwo {
@@ -22,7 +22,7 @@ label {
 	margin-bottom: 5px;
 }
 .green{
-  background-color: lightgreen;
+  background-color: darkgreen;
 }
 .yellow{
   background-color: yellow;
