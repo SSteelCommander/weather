@@ -4,20 +4,20 @@ var dateAndTime = moment().format("YYYY-MM-DD HH:MM:SS");
 var currentDate = moment().format("dddd, MMMM Do YYYY");
 var forecastfive = $(".fiveForecast");
 var todayWeather = $(".todayDes");
-var CityHist = [];
-var contHistEl = $(".CityHist");
+var Meta = [];
+var contHistEl = $(".Meta");
 
 function currentHistory() {
   contHistEl.empty();
 
-  for (let i = 0; i < CityHist.length; i++) {
-    var rowEl = $("<row>");
-    var btnEl = $("<button>").text(`${CityHist[i]}`);
+  for (let i = 0; i < Meta.length; i++) {
     rowEl.addClass("row histBtnRow");
     btnEl.addClass("btn btn-outline-secondary histBtn");
-    btnEl.attr("type", "button");
+    var rowEl = $("<row>");
+    var btnEl = $("<button>").text(`${Meta[i]}`);
     contHistEl.prepend(rowEl);
     rowEl.append(btnEl);
+    btnEl.attr("type", "button");
   }
   if (!currentCity) {
     return;
@@ -38,9 +38,9 @@ $(".search").on("click", function (event) {
   if (currentCity === "") {
     return;
   }
-  CityHist.push(currentCity);
+  Meta.push(currentCity);
 
-  localStorage.setItem("currentCity", JSON.stringify(CityHist));
+  localStorage.setItem("currentCity", JSON.stringify(Meta));
   forecastfive.empty();
   currentHistory();
   getWeatherToday();
@@ -58,8 +58,8 @@ function getWeatherToday() {
   }).then(function (response) {
     $(".currentCityNameToday").text(response.name);
     $(".dateToday").text(currentDate);
-    //Icons
-    $(".icons").attr(
+    //imported
+    $(".imported").attr(
       "src",
       `https://openweathermap.org/img/wn/${response.weather[0].icon}@2x.png`
     );
@@ -93,13 +93,13 @@ function getWeatherToday() {
       pElexposed.append(exposedSpan);
       todayWeather.append(pElexposed);
       //exposer chart
-      if (exposed >= 0 && exposed <= 2) {
+      if (exposed  <= 2) {
         exposedSpan.attr("class", "green");
-      } else if (exposed > 2 && exposed <= 5) {
+      } else if (exposed <= 5) {
         exposedSpan.attr("class", "yellow");
-      } else if (exposed > 5 && exposed <= 7) {
+      } else if ( exposed <= 7) {
         exposedSpan.attr("class", "orange");
-      } else if (exposed > 7 && exposed <= 10) {
+      } else if ( exposed <= 10) {
         exposedSpan.attr("class", "red");
       } else {
         exposedSpan.attr("class", "purple");
@@ -112,20 +112,21 @@ function getWeatherToday() {
 //set city richmond
 function initLoad() {
   var CityHistStore = JSON.parse(localStorage.getItem("currentCity"));
-
+  //if no city use richmond
   if (CityHistStore !== null) {
-    CityHist = CityHistStore;
+    Meta = CityHistStore;
   }
   getWeatherToday();
   currentHistory();
 }
-
+//get the url data for the five day forcast
 function getFiveDayForecast() {
   var fiveDaysURL = `https://api.openweathermap.org/data/2.5/forecast?q=${currentCity}&units=imperial&appid=${key}`;
-
+  //get method
   $.ajax({
     url: fiveDaysURL,
     method: "GET",
+    //get obj for array
   }).then(function (response) {
     var fiveDayArray = response.list;
     var myWeather = [];
@@ -133,13 +134,13 @@ function getFiveDayForecast() {
     $.each(fiveDayArray, function (index, value) {
       testObj = {
         temp: value.main.temp,
-        currentDate: value.dt_txt.split(" ")[0],
-        time: value.dt_txt.split(" ")[1],
-        feels_like: value.main.feels_like,
         icon: value.weather[0].icon,
+        time: value.dt_txt.split(" ")[1],
+        currentDate: value.dt_txt.split(" ")[0],
+        feels_like: value.main.feels_like,
         humidity: value.main.humidity,
       };
-
+      //make sure that
       if (value.dt_txt.split(" ")[1] === "12:00:00") {
         myWeather.push(testObj);
       }
@@ -147,23 +148,24 @@ function getFiveDayForecast() {
 
     //set cards
     for (let i = 0; i < myWeather.length; i++) {
+      //set card
       var divElCard = $("<div>");
       divElCard.attr("class", "card text-white bg-primary mb-3 cardOne");
       divElCard.attr("style", "max-width: 200px;");
       forecastfive.append(divElCard);
-
+      //set header
       var divElHeader = $("<div>");
       divElHeader.attr("class", "card-header");
       var m = moment(`${myWeather[i].currentDate}`).format("MM-DD-YYYY");
       divElHeader.text(m);
       divElCard.append(divElHeader);
-
+      //set body
       var divElBody = $("<div>");
       divElBody.attr("class", "card-body");
       divElCard.append(divElBody);
-
+      //weather image
       var divElIcon = $("<img>");
-      divElIcon.attr("class", "icons");
+      divElIcon.attr("class", "imported");
       divElIcon.attr(
         "src",
         `https://openweathermap.org/img/wn/${myWeather[i].icon}@2x.png`

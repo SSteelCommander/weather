@@ -11,7 +11,7 @@ label {
 .card {
 	margin: 5px;
 }
-.colOne {
+.white {
 	background-color: lightblue;
 
 }
@@ -37,7 +37,7 @@ label {
 .purple{
   background-color: purple;
 }
-.icons {
+.imported {
 	height: 70px;
 	width: 70px;
 }
